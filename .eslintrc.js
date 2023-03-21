@@ -40,6 +40,7 @@ module.exports = {
 	 * "error" 或 2  ==>  规则作为一个错误（代码不能执行，界面报错）
 	 */
 	rules: {
+		// "no-unused-vars": "off",
 		// eslint (http://eslint.cn/docs/rules)
 		"no-var": "error", // 要求使用 let 或 const 而不是 var
 		"no-multiple-empty-lines": ["error", { max: 1 }], // 不允许多个空行
@@ -48,7 +49,7 @@ module.exports = {
 		"no-irregular-whitespace": "off", // 禁止不规则的空白
 
 		// typeScript (https://typescript-eslint.io/rules)
-		"@typescript-eslint/no-unused-vars": "error", // 禁止定义未使用的变量
+		"@typescript-eslint/no-unused-vars": "warn", // 禁止定义未使用的变量
 		"@typescript-eslint/no-inferrable-types": "off", // 可以轻松推断的显式类型可能会增加不必要的冗长
 		"@typescript-eslint/no-namespace": "off", // 禁止使用自定义 TypeScript 模块和命名空间。
 		"@typescript-eslint/no-explicit-any": "off", // 禁止使用 any 类型

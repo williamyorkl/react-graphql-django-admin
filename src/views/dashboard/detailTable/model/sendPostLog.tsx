@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import { Image } from "antd";
 import type { ColumnsType } from "antd/es/table";
 const columns: ColumnsType<any> = [
 	{
@@ -19,6 +20,12 @@ const columns: ColumnsType<any> = [
 				{text}
 			</a>
 		)
+	},
+	{
+		title: "图片预览",
+		dataIndex: "blenderRenderPicturesImgPath",
+		key: "blenderRenderPicturesImgPath",
+		render: text => <Image src={`http://source-media.casecasy.com/app/media/${text}-255x255.webp`} width={120} />
 	},
 	{
 		title: "创建时间",

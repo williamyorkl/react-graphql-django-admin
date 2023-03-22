@@ -70,7 +70,8 @@ const DataVisualize = () => {
 				return {
 					...item,
 					createdAt: dayjs(item.createdAt).format("YYYY/MM/DD HH"),
-					rawCreatedAt: item.createdAt
+					rawCreatedAt: item.createdAt,
+					blenderRenderPicturesImgPath: item.blenderRenderPictures?.imagePath
 				};
 			});
 		} else {
@@ -78,7 +79,8 @@ const DataVisualize = () => {
 				return {
 					...item,
 					createdAt: dayjs(item.createdAt).format("YYYY/MM/DD"),
-					rawCreatedAt: item.createdAt
+					rawCreatedAt: item.createdAt,
+					blenderRenderPicturesImgPath: item.blenderRenderPictures?.imagePath
 				};
 			});
 		}

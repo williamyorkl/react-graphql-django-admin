@@ -1,7 +1,6 @@
 import dayjs from "dayjs";
 import { Image } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { text } from "stream/consumers";
 const columns: ColumnsType<any> = [
 	{
 		title: "序号",

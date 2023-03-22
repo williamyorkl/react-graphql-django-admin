@@ -29,6 +29,9 @@ export const GET_SEND_POST_LOG = gql`
 			id
 			pinterestSharedUrl
 			createdAt
+			blenderRenderPictures {
+				imagePath
+			}
 		}
 	}
 `;

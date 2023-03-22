@@ -4,7 +4,6 @@ import { GET_RAW_DATA_PINTEREST_IMG, GET_BLENDER_RENDER_PIC, GET_SEND_POST_LOG }
 
 export function useGeneralData(dateRangeArray: any) {
 	const [createStart, createEnd] = dateRangeArray;
-
 	const { data: rawDataPinImg } = useQuery(GET_RAW_DATA_PINTEREST_IMG, {
 		variables: { createStart, createEnd },
 		notifyOnNetworkStatusChange: true
@@ -15,7 +14,7 @@ export function useGeneralData(dateRangeArray: any) {
 		notifyOnNetworkStatusChange: true
 	});
 
-	const { data: sendPostLog } = useQuery(GET_SEND_POST_LOG, {
+	const { data: sendPostLog, loading } = useQuery(GET_SEND_POST_LOG, {
 		variables: { createStart, createEnd },
 		notifyOnNetworkStatusChange: true
 	});
@@ -23,6 +22,7 @@ export function useGeneralData(dateRangeArray: any) {
 	return {
 		rawDataPinImg,
 		blenderRenderPic,
-		sendPostLog
+		sendPostLog,
+		loading
 	};
 }

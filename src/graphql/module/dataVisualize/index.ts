@@ -7,6 +7,7 @@ export const GET_RAW_DATA_PINTEREST_IMG = gql`
 			id
 			imgDownloadLink
 			productId
+			createdAt
 		}
 	}
 `;
@@ -17,9 +18,7 @@ export const GET_BLENDER_RENDER_PIC = gql`
 			id
 			productId
 			isRetrieved
-			pinterestSendPostLogs {
-				id
-			}
+			createdAt
 		}
 	}
 `;
@@ -29,6 +28,7 @@ export const GET_SEND_POST_LOG = gql`
 		pinterestLogs(createdAtStart: $createStart, createdAtEnd: $createEnd) {
 			id
 			pinterestSharedUrl
+			createdAt
 		}
 	}
 `;

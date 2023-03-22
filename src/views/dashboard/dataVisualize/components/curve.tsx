@@ -1,17 +1,21 @@
 import { useEcharts } from "@/hooks/useEcharts";
 
-const Curve = () => {
-	const data = [
-		{ value: 30, spotName: "掘金" },
-		{ value: 90, spotName: "CSDN" },
-		{ value: 10, spotName: "Gitee" },
-		{ value: 70, spotName: "GitHub" },
-		{ value: 20, spotName: "知乎" },
-		{ value: 60, spotName: "MyBlog" },
-		{ value: 55, spotName: "简书" },
-		{ value: 80, spotName: "StackOverFlow" },
-		{ value: 50, spotName: "博客园" }
-	];
+const Curve = ({ chartData }: any) => {
+	// const data = [
+	// 	{ value: 30, dateTime: "掘金" },
+	// 	{ value: 90, dateTime: "CSDN" },
+	// 	{ value: 10, dateTime: "Gitee" },
+	// 	{ value: 70, dateTime: "GitHub" },
+	// 	{ value: 20, dateTime: "知乎" },
+	// 	{ value: 60, dateTime: "MyBlog" },
+	// 	{ value: 55, dateTime: "简书" },
+	// 	{ value: 80, dateTime: "StackOverFlow" },
+	// 	{ value: 50, dateTime: "博客园" }
+	// ];
+
+	const data = chartData;
+	console.log("🚀 ~ file: curve.tsx:17 ~ Curve ~ data:", data);
+
 	const option: any = {
 		tooltip: {
 			trigger: "axis",
@@ -64,7 +68,7 @@ const Curve = () => {
 				type: "category",
 				data: data.map((val: any) => {
 					return {
-						value: val.spotName
+						value: val.dateTime
 					};
 				}),
 				axisTick: {
@@ -75,11 +79,11 @@ const Curve = () => {
 					margin: 20,
 					interval: 0,
 					color: "#a1a1a1",
-					fontSize: 14,
-					formatter: function (name: string) {
-						undefined;
-						return name.length > 8 ? name.slice(0, 8) + "..." : name;
-					}
+					fontSize: 14
+					// formatter: function (name: string) {
+					// 	undefined;
+					// 	return name.length > 8 ? name.slice(0, 8) + "..." : name;
+					// }
 				},
 				axisLine: {
 					lineStyle: {

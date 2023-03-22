@@ -1,4 +1,3 @@
-import Pie from "./components/pie";
 import Curve from "./components/curve";
 import "./index.less";
 import AddPerson from "./images/add_person.png";
@@ -12,11 +11,14 @@ import dayjs from "dayjs";
 import type { Dayjs } from "dayjs";
 import { useGeneralData } from "./hooks/useGeneralData";
 
+import { useNavigate } from "react-router-dom";
 import _ from "lodash";
+import { TABLE_DETAIL } from "@/config/config";
 
-type IDataType = "rawDataPinImg" | "blenderRenderPic" | "sendPostLog";
+export type IDataType = "rawDataPinImg" | "blenderRenderPic" | "sendPostLog";
 
 const DataVisualize = () => {
+	const navigate = useNavigate();
 	const { RangePicker } = DatePicker;
 
 	const dateFormat = "YYYY/MM/DD";
@@ -67,14 +69,16 @@ const DataVisualize = () => {
 			reslutData = activeData.map((item: any) => {
 				return {
 					...item,
-					createdAt: dayjs(item.createdAt).format("YYYY/MM/DD HH")
+					createdAt: dayjs(item.createdAt).format("YYYY/MM/DD HH"),
+					rawCreatedAt: item.createdAt
 				};
 			});
 		} else {
 			reslutData = activeData.map((item: any) => {
 				return {
 					...item,
-					createdAt: dayjs(item.createdAt).format("YYYY/MM/DD")
+					createdAt: dayjs(item.createdAt).format("YYYY/MM/DD"),
+					rawCreatedAt: item.createdAt
 				};
 			});
 		}
@@ -83,15 +87,29 @@ const DataVisualize = () => {
 		const countedGroupByData = Object.keys(groupByData).map(key => {
 			return {
 				dateTime: key,
-				value: groupByData[key]?.length || 0
+				value: groupByData[key]?.length || 0,
+				rawData: groupByData[key]
 			};
 		});
 
 		console.log("🚀 ~ file: index.tsx:84 ~ Object.keys ~ countedGroupByData:", countedGroupByData);
 
 		setChartData(countedGroupByData);
+	};
 
-		console.log("🚀 ~ file: index.tsx:81 ~ onClickCard ~ groupByData:", groupByData);
+	/**
+	 * 柱形图点击时间
+	 */
+	const barClickEvent = (param: any) => {
+		const targetVal = chartData.find((i: any) => i.dateTime === param.name);
+		console.log("🚀 ~ file: index.tsx:101 ~ barClickEvent ~ targetVal:", targetVal);
+
+		navigate(TABLE_DETAIL, {
+			state: {
+				data: targetVal.rawData,
+				dataType: cardTitle
+			}
+		});
 	};
 
 	useEffect(() => {
@@ -114,13 +132,6 @@ const DataVisualize = () => {
 
 				<div className="top-content">
 					<div className="item-center">
-						<div className="today-traffic traffic-box" onClick={() => onClickCard("sendPostLog")}>
-							<div className="traffic-img">
-								<img src={Today} alt="" />
-							</div>
-							<span className="item-value">{sendPostLog?.pinterestLogs.length}</span>
-							<span className="traffic-name sle">新发送图片</span>
-						</div>
 						<div className="raw-data-pin-img-count traffic-box" onClick={() => onClickCard("rawDataPinImg")}>
 							<div className="traffic-img">
 								<img src={AddPerson} alt="" />
@@ -135,6 +146,13 @@ const DataVisualize = () => {
 							<span className="item-value">{blenderRenderPic?.blenderPictures.length}</span>
 							<span className="traffic-name sle">新渲染图片</span>
 						</div>
+						<div className="today-traffic traffic-box" onClick={() => onClickCard("sendPostLog")}>
+							<div className="traffic-img">
+								<img src={Today} alt="" />
+							</div>
+							<span className="item-value">{sendPostLog?.pinterestLogs.length}</span>
+							<span className="traffic-name sle">新发送图片</span>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -142,7 +160,7 @@ const DataVisualize = () => {
 				<div className="bottom-title">{cardTitle}数据</div>
 				<div className="curve-echarts">
 					{/*  NOTE - 数据展示：如果是今天就按小时归类；如果是一周就按天归类 */}
-					{chartData ? <Curve chartData={chartData} /> : null}
+					{chartData ? <Curve chartData={chartData} barClickEvent={barClickEvent} /> : null}
 				</div>
 			</div>
 		</div>

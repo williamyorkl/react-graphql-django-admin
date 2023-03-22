@@ -6,7 +6,7 @@ import { useEffect, useRef } from "react";
  * @param {Object} options 绘制Echarts的参数(必传)
  * @return chart
  * */
-export const useEcharts = (options: echarts.EChartsCoreOption, data?: any) => {
+export const useEcharts = (options: echarts.EChartsCoreOption, data?: any, barClickEvent?: any) => {
 	const myChart = useRef<echarts.EChartsType>();
 	const echartsRef = useRef<HTMLDivElement>(null);
 
@@ -25,6 +25,9 @@ export const useEcharts = (options: echarts.EChartsCoreOption, data?: any) => {
 			myChart.current = echarts.init(echartsRef.current as HTMLDivElement);
 		}
 		myChart?.current?.setOption(options);
+
+		myChart.current?.on("click", barClickEvent);
+
 		window.addEventListener("resize", echartsResize, false);
 		return () => {
 			window.removeEventListener("resize", echartsResize);

@@ -16,7 +16,7 @@ export const GET_BLENDER_RENDER_PIC = gql`
 	query ($createStart: DateTime!, $createEnd: DateTime!) {
 		blenderPictures(createdAtStart: $createStart, createdAtEnd: $createEnd) {
 			id
-			productId
+			imagePath
 			isRetrieved
 			createdAt
 		}

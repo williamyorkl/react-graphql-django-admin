@@ -1,18 +1,6 @@
 import { useEcharts } from "@/hooks/useEcharts";
 
-const Curve = ({ chartData }: any) => {
-	// const data = [
-	// 	{ value: 30, dateTime: "掘金" },
-	// 	{ value: 90, dateTime: "CSDN" },
-	// 	{ value: 10, dateTime: "Gitee" },
-	// 	{ value: 70, dateTime: "GitHub" },
-	// 	{ value: 20, dateTime: "知乎" },
-	// 	{ value: 60, dateTime: "MyBlog" },
-	// 	{ value: 55, dateTime: "简书" },
-	// 	{ value: 80, dateTime: "StackOverFlow" },
-	// 	{ value: 50, dateTime: "博客园" }
-	// ];
-
+const Curve = ({ chartData, barClickEvent }: any) => {
 	const data = chartData;
 	console.log("🚀 ~ file: curve.tsx:17 ~ Curve ~ data:", data);
 
@@ -147,7 +135,8 @@ const Curve = ({ chartData }: any) => {
 			}
 		]
 	};
-	const [echartsRef] = useEcharts(option, data);
+	const [echartsRef] = useEcharts(option, data, barClickEvent);
+
 	return <div ref={echartsRef} className="content-box"></div>;
 };
 

@@ -50,9 +50,12 @@ const DataVisualize = () => {
 
 	const generalData = useGeneralData(dateRange);
 	const { rawDataPinImg, blenderRenderPic, sendPostLog } = generalData;
+	const [cardTitle, setCardTitle] = useState<any>(null);
 
 	const [chartData, setChartData] = useState<any>(null);
 	const onClickCard = (dataType: IDataType) => {
+		setCardTitle(dataType);
+
 		const activeData: any = Object.values(generalData[dataType])[0];
 		console.log("🚀 ~ file: index.tsx:54 ~ onClickCard ~ activeData:", activeData);
 
@@ -136,7 +139,7 @@ const DataVisualize = () => {
 				</div>
 			</div>
 			<div className="card bottom-box">
-				<div className="bottom-title">数据来源</div>
+				<div className="bottom-title">{cardTitle}数据</div>
 				<div className="curve-echarts">
 					{/*  NOTE - 数据展示：如果是今天就按小时归类；如果是一周就按天归类 */}
 					{chartData ? <Curve chartData={chartData} /> : null}

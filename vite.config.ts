@@ -47,8 +47,12 @@ export default defineConfig((mode: ConfigEnv): UserConfig => {
 					changeOrigin: true,
 					rewrite: path => path.replace(/^\/api/, "")
 				},
+				// "/graphql": {
+				// 	target: "http://localhost:8112"
+				// 	// changeOrigin: true
+				// }
 				"/graphql": {
-					target: "http://localhost:8112"
+					target: "http://172.24.110.68:8112"
 					// changeOrigin: true
 				}
 			}

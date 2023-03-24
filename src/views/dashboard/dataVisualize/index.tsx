@@ -6,7 +6,7 @@ import Today from "./images/today.png";
 // import BookSum1 from "./images/book_sum.png";
 
 import React, { useEffect, useState } from "react";
-import { DatePicker } from "antd";
+import { Tag, DatePicker } from "antd";
 import dayjs from "dayjs";
 import type { Dayjs } from "dayjs";
 import { useGeneralData } from "./hooks/useGeneralData";
@@ -14,6 +14,9 @@ import { useGeneralData } from "./hooks/useGeneralData";
 import { useNavigate } from "react-router-dom";
 import _ from "lodash";
 import { TABLE_DETAIL } from "@/config/config";
+
+import { Tabs } from "antd";
+import type { TabsProps } from "antd";
 
 export type IDataType = "rawDataPinImg" | "blenderRenderPic" | "sendPostLog";
 
@@ -41,8 +44,13 @@ const DataVisualize = () => {
 		rangePresets[0]["value"][1].toISOString()
 	]);
 
+	const [dateRangeLabel, setDateRangeLabel] = useState<any>("今天");
+
 	const onRangeChange = (dates: null | (Dayjs | null)[]) => {
 		if (dates) {
+			const matchedPresetItem = rangePresets.find(item => _.isEqual(dates, item.value));
+			setDateRangeLabel(matchedPresetItem?.label);
+
 			console.log("From: ", dates[0]?.toISOString(), ", to: ", dates[1]?.toISOString());
 			setDateRange([dates[0]?.toISOString(), dates[1]?.toISOString()]);
 		} else {
@@ -52,17 +60,22 @@ const DataVisualize = () => {
 
 	const generalData = useGeneralData(dateRange);
 	const { rawDataPinImg, blenderRenderPic, sendPostLog } = generalData;
-	const [cardTitle, setCardTitle] = useState<any>(null);
+	const [cardTitle, setCardTitle] = useState<any>("各个卡片");
 
 	const [chartData, setChartData] = useState<any>(null);
+	const [chartDataGroupById, setChartDataGroupById] = useState<any>(null);
+	console.log("🚀 ~ file: index.tsx:62 ~ DataVisualize ~ chartDataGroupById:", chartDataGroupById);
+
 	const onClickCard = (dataType: IDataType) => {
 		setCardTitle(dataType);
 
 		const activeData: any = Object.values(generalData[dataType])[0];
-		console.log("🚀 ~ file: index.tsx:54 ~ onClickCard ~ activeData:", activeData);
 
 		let reslutData = null;
 
+		/**
+		 * 1）按日期统计
+		 */
 		// 处理日期
 		// if preset 日期 === 今天， 则以时间维度；否则日期维度
 		if (dayjs(dateRange[0]).format(dateFormat) === dayjs().format(dateFormat)) {
@@ -84,19 +97,30 @@ const DataVisualize = () => {
 				};
 			});
 		}
-		const groupByData = _.groupBy(reslutData, "createdAt");
+		const groupByDate = _.groupBy(reslutData, "createdAt");
 
-		const countedGroupByData = Object.keys(groupByData).map(key => {
+		const countedGroupByData = Object.keys(groupByDate).map(key => {
 			return {
 				dateTime: key,
-				value: groupByData[key]?.length || 0,
-				rawData: groupByData[key]
+				value: groupByDate[key]?.length || 0,
+				rawData: groupByDate[key]
 			};
 		});
-
-		console.log("🚀 ~ file: index.tsx:84 ~ Object.keys ~ countedGroupByData:", countedGroupByData);
-
 		setChartData(countedGroupByData);
+
+		/**
+		 * 2）按 nox id 统计
+		 */
+		const groupById = _.groupBy(reslutData, "pinterestBotInfo.noxName");
+		console.log("🚀 ~ file: index.tsx:115 ~ onClickCard ~ groupById:", groupById);
+		const countedGroupById = Object.keys(groupById).map(key => {
+			return {
+				dateTime: key,
+				value: groupById[key]?.length || 0,
+				rawData: groupById[key]
+			};
+		});
+		setChartDataGroupById(countedGroupById);
 	};
 
 	/**
@@ -114,11 +138,33 @@ const DataVisualize = () => {
 		});
 	};
 
+	const onTabChange = (key: string) => {
+		console.log("🚀 ~ file: index.tsx:136 ~ onTabChange ~ key:", key);
+	};
+
 	useEffect(() => {
 		setTimeout(() => {
 			generalData.loading ? null : onClickCard("sendPostLog");
 		}, 1000);
 	}, [dateRange]);
+	const tabItems: TabsProps["items"] = [
+		{
+			key: "1",
+			label: `按日期统计`,
+			children: (
+				<div className="curve-echarts">{chartData ? <Curve chartData={chartData} barClickEvent={barClickEvent} /> : null}</div>
+			)
+		},
+		{
+			key: "2",
+			label: `按虚拟机id统计`,
+			children: (
+				<div className="curve-echarts">
+					{chartDataGroupById ? <Curve chartData={chartDataGroupById} barClickEvent={barClickEvent} /> : null}
+				</div>
+			)
+		}
+	];
 
 	return (
 		<div className="dataVisualize-box">
@@ -131,6 +177,9 @@ const DataVisualize = () => {
 					onChange={onRangeChange}
 					defaultValue={[dayjs(todayRange[0]), dayjs()]}
 				/>
+				<Tag color={"#2db7f5"} style={{ marginLeft: "20px", padding: "4px 10px 4px" }}>
+					{dateRangeLabel}
+				</Tag>
 
 				<div className="top-content">
 					<div className="item-center">
@@ -160,10 +209,8 @@ const DataVisualize = () => {
 			</div>
 			<div className="card bottom-box">
 				<div className="bottom-title">{cardTitle}数据</div>
-				<div className="curve-echarts">
-					{/*  NOTE - 数据展示：如果是今天就按小时归类；如果是一周就按天归类 */}
-					{chartData ? <Curve chartData={chartData} barClickEvent={barClickEvent} /> : null}
-				</div>
+				<Tabs defaultActiveKey="1" items={tabItems} onChange={onTabChange} style={{ marginTop: "40px", marginLeft: "40px" }} />
+				{/*  NOTE - 数据展示：如果是今天就按小时归类；如果是一周就按天归类 */}
 			</div>
 		</div>
 	);

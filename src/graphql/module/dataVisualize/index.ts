@@ -27,10 +27,14 @@ export const GET_SEND_POST_LOG = gql`
 	query ($createStart: DateTime!, $createEnd: DateTime!) {
 		pinterestLogs(createdAtStart: $createStart, createdAtEnd: $createEnd) {
 			id
+			pinAccountId
 			pinterestSharedUrl
 			createdAt
 			blenderRenderPictures {
 				imagePath
+			}
+			pinterestBotInfo {
+				noxName
 			}
 		}
 	}

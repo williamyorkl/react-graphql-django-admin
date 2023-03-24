@@ -1,7 +1,15 @@
 import { useEcharts } from "@/hooks/useEcharts";
 
 const Curve = ({ chartData, barClickEvent }: any) => {
-	const data = chartData.sort((a: { dateTime: string }, b: { dateTime: any }) => a.dateTime.localeCompare(b.dateTime));
+	const data = chartData.sort((a: { dateTime: string }, b: { dateTime: any }) => {
+		if (a.dateTime.indexOf("NoxPlayer") !== -1) {
+			console.log(`Number(b.dateTime.split("NoxPlayer")[1]`, Number(b.dateTime.split("NoxPlayer")[1]));
+
+			return Number(a.dateTime.split("NoxPlayer")[1]) - Number(b.dateTime.split("NoxPlayer")[1]);
+		} else {
+			return a.dateTime.localeCompare(b.dateTime);
+		}
+	});
 	console.log("🚀 ~ file: curve.tsx:17 ~ Curve ~ data:", data);
 
 	const option: any = {

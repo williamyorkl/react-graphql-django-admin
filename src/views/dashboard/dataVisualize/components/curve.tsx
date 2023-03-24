@@ -1,7 +1,7 @@
 import { useEcharts } from "@/hooks/useEcharts";
 
 const Curve = ({ chartData, barClickEvent }: any) => {
-	const data = chartData;
+	const data = chartData.sort((a: { dateTime: string }, b: { dateTime: any }) => a.dateTime.localeCompare(b.dateTime));
 	console.log("🚀 ~ file: curve.tsx:17 ~ Curve ~ data:", data);
 
 	const option: any = {

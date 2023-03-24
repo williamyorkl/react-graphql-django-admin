@@ -235,7 +235,7 @@ const DataVisualize = () => {
 				{cardTitle === "sendPostLog" ? (
 					<Select
 						placeholder="选择虚拟机查看具体数据"
-						style={{ width: 200, marginTop: 10, marginLeft: 200 }}
+						style={{ width: 250, marginTop: 10, marginLeft: 230 }}
 						onChange={handleSelectChange}
 						options={chartDataGroupById.map((i: any) => ({
 							label: i.dateTime,

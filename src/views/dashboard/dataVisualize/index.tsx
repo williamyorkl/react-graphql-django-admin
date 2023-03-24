@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 import _ from "lodash";
 import { TABLE_DETAIL } from "@/config/config";
 
-import { Tabs } from "antd";
+import { Tabs, Select } from "antd";
 import type { TabsProps } from "antd";
 
 export type IDataType = "rawDataPinImg" | "blenderRenderPic" | "sendPostLog";
@@ -45,7 +45,6 @@ const DataVisualize = () => {
 	]);
 
 	const [dateRangeLabel, setDateRangeLabel] = useState<any>("今天");
-
 	const onRangeChange = (dates: null | (Dayjs | null)[]) => {
 		if (dates) {
 			const matchedPresetItem = rangePresets.find(item => _.isEqual(dates, item.value));
@@ -61,6 +60,8 @@ const DataVisualize = () => {
 	const generalData = useGeneralData(dateRange);
 	const { rawDataPinImg, blenderRenderPic, sendPostLog } = generalData;
 	const [cardTitle, setCardTitle] = useState<any>("各个卡片");
+
+	const [beforeGroupedData, setBeforeGroupedData] = useState<any>(null);
 
 	const [chartData, setChartData] = useState<any>(null);
 	const [chartDataGroupById, setChartDataGroupById] = useState<any>(null);
@@ -97,6 +98,8 @@ const DataVisualize = () => {
 				};
 			});
 		}
+		setBeforeGroupedData(reslutData);
+
 		const groupByDate = _.groupBy(reslutData, "createdAt");
 
 		const countedGroupByData = Object.keys(groupByDate).map(key => {
@@ -106,6 +109,7 @@ const DataVisualize = () => {
 				rawData: groupByDate[key]
 			};
 		});
+
 		setChartData(countedGroupByData);
 
 		/**
@@ -120,6 +124,7 @@ const DataVisualize = () => {
 				rawData: groupById[key]
 			};
 		});
+
 		setChartDataGroupById(countedGroupById);
 	};
 
@@ -165,6 +170,24 @@ const DataVisualize = () => {
 			)
 		}
 	];
+	const handleSelectChange = (val: any) => {
+		console.log("🚀 ~ file: index.tsx:172 ~ handleSelectChange ~ val:", val, beforeGroupedData);
+
+		const filtedGroupedData = beforeGroupedData.filter((i: any) => i.pinterestBotInfo?.noxName === val);
+
+		const groupedData = _.groupBy(filtedGroupedData, "createdAt");
+
+		const countedGroupByData = Object.keys(groupedData).map(key => {
+			return {
+				dateTime: key,
+				value: groupedData[key]?.length || 0,
+				rawData: groupedData[key]
+			};
+		});
+		console.log("🚀 ~ file: index.tsx:187 ~ countedGroupByData ~ countedGroupByData:", countedGroupByData);
+
+		setChartData(countedGroupByData);
+	};
 
 	return (
 		<div className="dataVisualize-box">
@@ -209,6 +232,17 @@ const DataVisualize = () => {
 			</div>
 			<div className="card bottom-box">
 				<div className="bottom-title">{cardTitle}数据</div>
+				{cardTitle === "sendPostLog" ? (
+					<Select
+						placeholder="选择虚拟机查看具体数据"
+						style={{ width: 200, marginTop: 10, marginLeft: 200 }}
+						onChange={handleSelectChange}
+						options={chartDataGroupById.map((i: any) => ({
+							label: i.dateTime,
+							value: i.dateTime
+						}))}
+					/>
+				) : null}
 				<Tabs defaultActiveKey="1" items={tabItems} onChange={onTabChange} style={{ marginTop: "40px", marginLeft: "40px" }} />
 				{/*  NOTE - 数据展示：如果是今天就按小时归类；如果是一周就按天归类 */}
 			</div>

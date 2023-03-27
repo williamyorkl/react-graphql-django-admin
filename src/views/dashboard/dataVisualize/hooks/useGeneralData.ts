@@ -1,6 +1,11 @@
 import { useQuery } from "@apollo/client";
 
-import { GET_RAW_DATA_PINTEREST_IMG, GET_BLENDER_RENDER_PIC, GET_SEND_POST_LOG } from "@/graphql/module/dataVisualize";
+import {
+	GET_RAW_DATA_PINTEREST_IMG,
+	GET_BLENDER_RENDER_PIC,
+	GET_SEND_POST_LOG,
+	GET_BOT_INFO
+} from "@/graphql/module/dataVisualize";
 
 export function useGeneralData(dateRangeArray: any) {
 	const [createStart, createEnd] = dateRangeArray;
@@ -18,11 +23,15 @@ export function useGeneralData(dateRangeArray: any) {
 		variables: { createStart, createEnd },
 		notifyOnNetworkStatusChange: true
 	});
+	const { data: pinterestBotInfo } = useQuery(GET_BOT_INFO, {
+		notifyOnNetworkStatusChange: true
+	});
 
 	return {
 		rawDataPinImg,
 		blenderRenderPic,
 		sendPostLog,
+		pinterestBotInfo,
 		loading
 	};
 }

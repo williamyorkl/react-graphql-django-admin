@@ -2,10 +2,8 @@ import { useEcharts } from "@/hooks/useEcharts";
 
 const Curve = ({ chartData, barClickEvent }: any) => {
 	const data = chartData.sort((a: { dateTime: string }, b: { dateTime: any }) => {
-		if (a.dateTime.indexOf("NoxPlayer") !== -1) {
-			console.log(`Number(b.dateTime.split("NoxPlayer")[1]`, Number(b.dateTime.split("NoxPlayer")[1]));
-
-			return Number(a.dateTime.split("NoxPlayer")[1]) - Number(b.dateTime.split("NoxPlayer")[1]);
+		if (a.dateTime?.indexOf("NoxPlayer") !== -1) {
+			return Number(a.dateTime?.split("NoxPlayer")[1]) - Number(b.dateTime?.split("NoxPlayer")[1]);
 		} else {
 			return a.dateTime.localeCompare(b.dateTime);
 		}
@@ -21,18 +19,21 @@ const Curve = ({ chartData, barClickEvent }: any) => {
 			},
 			padding: 0,
 			formatter: (p: any) => {
-				let bot_info_string = Object.keys(p[0].data.rawData[0].pinterestBotInfo.pinterestBotBehaviour[0])
-					.map((val: any) => {
-						if (val !== "__typename") {
-							return `
-									<div style="display: flex;align-items: center;"><div style="width:5px;height:5px;background:#ffffff;border-radius: 50%;margin-right:5px"></div>
-									${val}:  ${p[0].data.rawData[0].pinterestBotInfo.pinterestBotBehaviour[0][val as any]}
-									</div>
-								`;
-						}
-					})
-					.join("");
-				console.log("bot_info_string", bot_info_string);
+				let bot_info_string = null;
+				if (p[0].data.behaviorData) {
+					bot_info_string = Object.keys(p[0].data.behaviorData)
+						.map((val: any) => {
+							if (val !== "__typename") {
+								return `
+										<div style="display: flex;align-items: center;"><div style="width:5px;height:5px;background:#ffffff;border-radius: 50%;margin-right:5px"></div>
+										${val}:  ${p[0].data.behaviorData[val as any]}
+										</div>
+									`;
+							}
+						})
+						.join("");
+				}
+				// console.log("bot_info_string", bot_info_string);
 				let dom = `<div style="width:100%; height: 170px !important; display:flex;flex-direction: column;justify-content: space-between;padding:10px;box-sizing: border-box;
       color:#fff; background: #6B9DFE;border-radius: 4px;font-size:14px; ">
         <div style="display: flex; align-items: center;"> <div style="width:5px;height:5px;background:#ffffff;border-radius: 50%;margin-right:5px"></div>平台 :  ${p[0].name}</div>
@@ -53,23 +54,22 @@ const Curve = ({ chartData, barClickEvent }: any) => {
 		dataZoom: [
 			{
 				show: true,
-				height: 10,
+				height: 20,
+				zoomLock: false,
+				type: "slider",
 				xAxisIndex: [0],
-				bottom: 0,
-				startValue: 0, //数据窗口范围的起始数值
-				endValue: 9, //数据窗口范围的结束数值
+				left: "center", //组件离容器左侧的距离,'left', 'center', 'right','20%'
+				top: "top", //组件离容器上侧的距离,'top', 'middle', 'bottom','20%'
+				right: "auto", //组件离容器右侧的距离,'20%'
+				bottom: "auto",
+				start: 0, //数据窗口范围的起始数值
+				end: 100, //数据窗口范围的结束数值
 				handleStyle: {
 					color: "#6b9dfe"
 				},
 				textStyle: {
 					color: "transparent"
 				}
-			},
-			{
-				type: "inside",
-				show: true,
-				height: 0,
-				zoomLock: true //控制伸缩
 			}
 		],
 		xAxis: [
@@ -84,15 +84,13 @@ const Curve = ({ chartData, barClickEvent }: any) => {
 					show: false
 				},
 				axisLabel: {
-					// interval: time > 4 ? 27 : 0,
 					margin: 20,
 					interval: 0,
 					color: "#a1a1a1",
-					fontSize: 14
-					// formatter: function (name: string) {
-					// 	undefined;
-					// 	return name.length > 8 ? name.slice(0, 8) + "..." : name;
-					// }
+					fontSize: 14,
+					formatter: function (value: any) {
+						return value?.split("NoxPlayer")[1] || value;
+					}
 				},
 				axisLine: {
 					lineStyle: {
@@ -123,12 +121,7 @@ const Curve = ({ chartData, barClickEvent }: any) => {
 					color: "#a1a1a1",
 					fontSize: 16,
 					fontWeight: 400,
-					formatter: function (value: number) {
-						if (value === 0) {
-							return value;
-						} else if (value >= 10000) {
-							return value / 10000 + "w";
-						}
+					formatter: function (value: any) {
 						return value;
 					}
 				}
@@ -141,10 +134,11 @@ const Curve = ({ chartData, barClickEvent }: any) => {
 				data: data.map((val: any) => {
 					return {
 						value: val.value,
-						rawData: val.rawData
+						rawData: val.rawData,
+						behaviorData: val.behaviorData
 					};
 				}),
-				barWidth: "45px",
+				barWidth: "35px",
 				itemStyle: {
 					color: "#C5D8FF",
 					borderRadius: [12, 12, 0, 0]

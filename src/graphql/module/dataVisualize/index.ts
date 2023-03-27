@@ -47,3 +47,22 @@ export const GET_SEND_POST_LOG = gql`
 		}
 	}
 `;
+
+export const GET_BOT_INFO = gql`
+	query {
+		pinterestBotInfo(isCurrentService: true) {
+			id
+			noxName
+			noxNumber
+			isCurrentService
+			pinterestBotBehaviour {
+				savePin
+				sendIdeaPin
+				followPeople
+				browsingPin
+				sendIdeaPin
+				sendProductPin
+			}
+		}
+	}
+`;

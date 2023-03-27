@@ -58,7 +58,8 @@ const DataVisualize = () => {
 	};
 
 	const generalData = useGeneralData(dateRange);
-	const { rawDataPinImg, blenderRenderPic, sendPostLog } = generalData;
+	const { rawDataPinImg, blenderRenderPic, sendPostLog, pinterestBotInfo } = generalData;
+	console.log("🚀 ~ file: index.tsx:62 ~ DataVisualize ~ pinterestBotInfo:", pinterestBotInfo);
 	const [cardTitle, setCardTitle] = useState<any>("各个卡片");
 
 	const [beforeGroupedData, setBeforeGroupedData] = useState<any>(null);
@@ -117,13 +118,19 @@ const DataVisualize = () => {
 		 */
 		const groupById = _.groupBy(reslutData, "pinterestBotInfo.noxName");
 		console.log("🚀 ~ file: index.tsx:115 ~ onClickCard ~ groupById:", groupById);
-		const countedGroupById = Object.keys(groupById).map(key => {
-			return {
-				dateTime: key,
-				value: groupById[key]?.length || 0,
-				rawData: groupById[key]
-			};
-		});
+
+		const countedGroupById = pinterestBotInfo.pinterestBotInfo.map(
+			(item: { noxName: string | number; pinterestBotBehaviour: any }) => {
+				console.log("pinterestBotInfo ===> ", item);
+				return {
+					dateTime: item.noxName,
+					value: groupById[item.noxName]?.length || 0,
+					rawData: groupById[item.noxName],
+					// TODO - 额外增加一个 behavior 字段，不然会没数据
+					behaviorData: item.pinterestBotBehaviour[0]
+				};
+			}
+		);
 
 		setChartDataGroupById(countedGroupById);
 	};
@@ -232,7 +239,7 @@ const DataVisualize = () => {
 			</div>
 			<div className="card bottom-box">
 				<div className="bottom-title">{cardTitle}数据</div>
-				{cardTitle === "sendPostLog" ? (
+				{/* {cardTitle === "sendPostLog" ? (
 					<Select
 						placeholder="选择虚拟机查看具体数据"
 						style={{ width: 250, marginTop: 10, marginLeft: 230 }}
@@ -242,7 +249,7 @@ const DataVisualize = () => {
 							value: i.dateTime
 						}))}
 					/>
-				) : null}
+				) : null} */}
 				<Tabs defaultActiveKey="1" items={tabItems} onChange={onTabChange} style={{ marginTop: "40px", marginLeft: "40px" }} />
 				{/*  NOTE - 数据展示：如果是今天就按小时归类；如果是一周就按天归类 */}
 			</div>

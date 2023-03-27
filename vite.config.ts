@@ -52,8 +52,8 @@ export default defineConfig((mode: ConfigEnv): UserConfig => {
 				// 	// changeOrigin: true
 				// }
 				"/graphql": {
-					// target: "http://172.24.110.68:8112"  // 内网穿透地址
-					target: "http://127.0.0.1:8112" // 内网地址
+					target: "http://172.24.110.68:8112" // 内网穿透地址
+					// target: "http://127.0.0.1:8112" // 内网地址
 					// changeOrigin: true
 				}
 			}

@@ -35,6 +35,14 @@ export const GET_SEND_POST_LOG = gql`
 			}
 			pinterestBotInfo {
 				noxName
+				pinterestBotBehaviour {
+					savePin
+					sendIdeaPin
+					followPeople
+					browsingPin
+					sendIdeaPin
+					sendProductPin
+				}
 			}
 		}
 	}

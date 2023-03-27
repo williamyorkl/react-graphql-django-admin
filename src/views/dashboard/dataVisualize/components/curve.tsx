@@ -21,10 +21,23 @@ const Curve = ({ chartData, barClickEvent }: any) => {
 			},
 			padding: 0,
 			formatter: (p: any) => {
-				let dom = `<div style="width:100%; height: 70px !important; display:flex;flex-direction: column;justify-content: space-between;padding:10px;box-sizing: border-box;
+				let bot_info_string = Object.keys(p[0].data.rawData[0].pinterestBotInfo.pinterestBotBehaviour[0])
+					.map((val: any) => {
+						if (val !== "__typename") {
+							return `
+									<div style="display: flex;align-items: center;"><div style="width:5px;height:5px;background:#ffffff;border-radius: 50%;margin-right:5px"></div>
+									${val}:  ${p[0].data.rawData[0].pinterestBotInfo.pinterestBotBehaviour[0][val as any]}
+									</div>
+								`;
+						}
+					})
+					.join("");
+				console.log("bot_info_string", bot_info_string);
+				let dom = `<div style="width:100%; height: 170px !important; display:flex;flex-direction: column;justify-content: space-between;padding:10px;box-sizing: border-box;
       color:#fff; background: #6B9DFE;border-radius: 4px;font-size:14px; ">
         <div style="display: flex; align-items: center;"> <div style="width:5px;height:5px;background:#ffffff;border-radius: 50%;margin-right:5px"></div>平台 :  ${p[0].name}</div>
-        <div style="display: flex;align-items: center;"><div style="width:5px;height:5px;background:#ffffff;border-radius: 50%;margin-right:5px"></div>数据量 :  ${p[0].value}</div>
+        <div style="display: flex;align-items: center;"><div style="width:5px;height:5px;background:#ffffff;border-radius: 50%;margin-right:5px"></div>发帖数据量 :  ${p[0].value}</div>
+				${bot_info_string}
       </div>`;
 				return dom;
 			}
@@ -39,7 +52,7 @@ const Curve = ({ chartData, barClickEvent }: any) => {
 		},
 		dataZoom: [
 			{
-				show: false,
+				show: true,
 				height: 10,
 				xAxisIndex: [0],
 				bottom: 0,
@@ -127,7 +140,8 @@ const Curve = ({ chartData, barClickEvent }: any) => {
 				type: "bar",
 				data: data.map((val: any) => {
 					return {
-						value: val.value
+						value: val.value,
+						rawData: val.rawData
 					};
 				}),
 				barWidth: "45px",

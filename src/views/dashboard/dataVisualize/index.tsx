@@ -84,7 +84,7 @@ const DataVisualize = () => {
 			reslutData = activeData.map((item: any) => {
 				return {
 					...item,
-					createdAt: dayjs(item.createdAt).format("YYYY/MM/DD HH"),
+					createdAt: dayjs(item.createdAt).format("MM/DD HH"),
 					rawCreatedAt: item.createdAt,
 					blenderRenderPicturesImgPath: item.blenderRenderPictures?.imagePath
 				};

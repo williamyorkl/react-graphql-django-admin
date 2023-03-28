@@ -1,13 +1,26 @@
 import { useEcharts } from "@/hooks/useEcharts";
 
 const Curve = ({ chartData, barClickEvent }: any) => {
-	const data = chartData.sort((a: { dateTime: string }, b: { dateTime: any }) => {
-		if (a.dateTime?.indexOf("NoxPlayer") !== -1) {
+	let filteredNoxPlayer = chartData;
+	let data = null;
+
+	// 判断dateTime 是否为日期还是 Noxplayer
+	if (chartData.some((i: any) => i.dateTime?.indexOf("NoxPlayer") !== -1)) {
+		filteredNoxPlayer = chartData.filter((i: any) => i.dateTime && i.dateTime.indexOf("NoxPlayer") !== -1);
+
+		filteredNoxPlayer.sort((a: { dateTime: string }, b: { dateTime: any }) => {
 			return Number(a.dateTime?.split("NoxPlayer")[1]) - Number(b.dateTime?.split("NoxPlayer")[1]);
-		} else {
+		});
+
+		data = [...new Set([...filteredNoxPlayer, ...chartData])];
+	} else {
+		filteredNoxPlayer.sort((a: { dateTime: string }, b: { dateTime: any }) => {
 			return a.dateTime.localeCompare(b.dateTime);
-		}
-	});
+		});
+
+		data = filteredNoxPlayer;
+	}
+
 	console.log("🚀 ~ file: curve.tsx:17 ~ Curve ~ data:", data);
 
 	const option: any = {
@@ -89,7 +102,11 @@ const Curve = ({ chartData, barClickEvent }: any) => {
 					color: "#a1a1a1",
 					fontSize: 14,
 					formatter: function (value: any) {
-						return value?.split("NoxPlayer")[1] || value;
+						if (value === "[object Object]") {
+							return "null";
+						} else {
+							return value?.split("NoxPlayer")[1] || value;
+						}
 					}
 				},
 				axisLine: {

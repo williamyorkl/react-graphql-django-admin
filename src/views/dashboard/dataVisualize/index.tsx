@@ -81,7 +81,7 @@ const DataVisualize = () => {
 		// 处理日期
 		// if preset 日期 === 今天， 则以时间维度；否则日期维度
 		const c1 = dayjs(dateRange[0]).format(dateFormat) === dayjs().format(dateFormat);
-		const c2 = dateRange[0].format(dateFormat) === dateRange[1].format(dateFormat);
+		const c2 = dayjs(dateRange[0]).format(dateFormat) === dayjs(dateRange[1]).format(dateFormat);
 		if (c1 || c2) {
 			reslutData = activeData.map((item: any) => {
 				return {
